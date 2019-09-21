@@ -1,0 +1,48 @@
+#!/bin/bash
+
+# Create scripts and set executable permissions
+# Created by Avinash L
+
+scriptName="$1"
+binDir="${HOME}/bin"
+fileName="${binDir}/${scriptName}"
+
+# check if no file name provided
+if [[ ! $1 ]]; then
+	echo "No file name provided, try again!"
+	exit 1;
+fi
+
+# check if filename alredy exists
+if [[ -e "$fileName" ]]; then
+	echo "$fileName already exists, try another name"
+	exit 1;
+fi
+
+# check if the filename is a command
+if type $scriptName ; then
+	echo "already an existing command, can you try another"
+	exit 1;
+fi
+
+# check if bin directory exists of create one
+if [[ ! -d "$binDir" ]]; then
+	if mkdir "$binDir"; then
+		echo "$binDir created succssfully" 
+	else
+		echo "Cannot create bin directory!"
+		exit 1;
+	fi
+fi
+
+# since all tests passed, create the script
+echo -e "#!/bin/bash\n# script name $scriptName" > "${fileName}"
+# provide executable permissions
+chmod u+x "${fileName}"
+#open in editor
+if [[ $EDITOR ]]; then
+		$EDITOR "$fileName"
+	else
+		echo "$scriptName created but could not open in editor"
+fi
+
